@@ -35,6 +35,8 @@ String directionOfEnemySnake = "down";
 // 7. Create and initialize a variable to hold how many pieces of food the snake has eaten.
 int piecesOfFoodEaten = 0;
 int enemyPiecesOfFoodEaten = 0;
+int yellowScore = 0;
+int greenScore = 0;
 // 8. Create and initialize foodX and foodY variables to hold the location of the food.
 int foodX = ((int)random(50)) * 10;
 int foodY = ((int)random(50)) * 10;
@@ -108,8 +110,62 @@ void collision() {
   for (int i = 0; i < snakeSegments.size(); i++) {
     for (int j = 0; j < snakeSegments.size(); j++) {
       if (i != j) {
-        if (snakeSegments.get(i).getX() == snakeSegments.get(j).getX()) {
-        } // finish loop
+        if (snakeSegments.get(i).getX() == snakeSegments.get(j).getX() && snakeSegments.get(i).getY() == snakeSegments.get(j).getY()) {
+          // Green player dies, yellow earns a point
+          yellowScore++;
+        }
+      }
+    }
+  }
+  for (int i = 0; i < enemySnakeSegments.size(); i++) {
+    for (int j = 0; j <enemySnakeSegments.size(); j++) {
+      if (i != j) {
+        if (enemySnakeSegments.get(i).getX() == enemySnakeSegments.get(j).getX() && enemySnakeSegments.get(i).getY() == enemySnakeSegments.get(j).getY()) {
+          // Green player dies, yellow earns a point
+          greenScore++;
+        }
+      }
+    }
+  }
+  for (int i = 0; i < snakeSegments.size(); i++) {
+    for (int j = 0; j < enemySnakeSegments.size(); j++) {
+      if(i == 0 && j == 0) {
+        // head on collision
+        if (snakeSegments.get(i).getX() == snakeSegments.get(j).getX() && snakeSegments.get(i).getY() == snakeSegments.get(j).getY()) {
+          // head on
+          if(piecesOfFoodEaten == enemyPiecesOfFoodEaten) {
+            if((int)random(10) > 5) {
+               // green wins through random chance
+               greenScore++;
+            }
+            else {
+              // yellow wins through random chance
+              yellowScore++;
+            }
+          }
+          else if(piecesOfFoodEaten > enemyPiecesOfFoodEaten) {
+            // green has more, so wins
+            greenScore++;
+          }
+          else {
+            // yellow has more, so wins
+            yellowScore++;
+          }
+        }
+      }
+      else if(i == 0) {
+        // green snake dies
+        if (snakeSegments.get(i).getX() == snakeSegments.get(j).getX() && snakeSegments.get(i).getY() == snakeSegments.get(j).getY()) {
+          // Green player dies, yellow earns a point
+          yellowScore++;
+        }
+      }
+      else if(j == 0) {
+        // yellow snake dies
+        if (snakeSegments.get(i).getX() == snakeSegments.get(j).getX() && snakeSegments.get(i).getY() == snakeSegments.get(j).getY()) {
+          // Green player dies, yellow earns a point
+          greenScore++;
+        }
       }
     }
   }
