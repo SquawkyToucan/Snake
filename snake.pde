@@ -87,7 +87,9 @@ void collision() {
   for(int i = 0; i < snakeSegments.size(); i++) {
     for(int j = 0; j < snakeSegments.size(); j++) {
       if(i != j) {
-        if(snakeSegments.get(i).getX() == snakeSegments.get(j).getX()) {} // finish loop 
+        if(snakeSegments.get(i).getX() == snakeSegments.get(j).getX() && snakeSegments.get(i).getY() == snakeSegments.get(j).getY()) {
+          noLoop();
+        } 
       }
     }
   }
