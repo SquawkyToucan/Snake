@@ -60,10 +60,18 @@ void draw() {
   move();
   drawSnake();
   collision();
+  drawScore();
   headOfSnake = snakeSegments.get(snakeSegments.size() - 1);
   headOfEnemySnake = enemySnakeSegments.get(enemySnakeSegments.size() - 1);
 }
 
+void drawScore() {
+  textSize(32);
+  fill(0, 153, 119);
+  text(greenScore, 10, 30);
+  fill(153, 170, 0);
+  text(yellowScore, 10, 55);
+}
 // 15. Complete the drawFood method below. (Hint: each piece of food should be a 10 by 10 rectangle).
 void drawFood() {
   fill(204, 17, 51);
@@ -98,12 +106,14 @@ void collision() {
   if (headOfSnake.getX() == foodX && headOfSnake.getY() == foodY) {
     println("Food eaten by green snake!");
     piecesOfFoodEaten++;
+    greenScore = greenScore + 2 * piecesOfFoodEaten;
     foodX = ((int)random(50)) * 10;
     foodY = ((int)random(50)) * 10;
   }
   if (headOfEnemySnake.getX() == foodX && headOfEnemySnake.getY() == foodY) {
     println("Food eaten by yellow snake!");
     enemyPiecesOfFoodEaten++;
+    yellowScore = yellowScore + 2 * enemyPiecesOfFoodEaten;
     foodX = ((int)random(50)) * 10;
     foodY = ((int)random(50)) * 10;
   }
@@ -121,54 +131,111 @@ void collision() {
     for (int j = 0; j <enemySnakeSegments.size(); j++) {
       if (i != j) {
         if (enemySnakeSegments.get(i).getX() == enemySnakeSegments.get(j).getX() && enemySnakeSegments.get(i).getY() == enemySnakeSegments.get(j).getY()) {
-          // Green player dies, yellow earns a point
+          // Yellow player dies, green earns a point
           greenScore++;
+        }
+      }
+    }
+  }
+  for (int i = 0; i < enemySnakeSegments.size(); i++) {
+    if ((enemySnakeSegments.get(i).getX() == headOfSnake.getX() && enemySnakeSegments.get(i).getY() == headOfSnake.getY())) {
+      // Point to yellow if not head
+      if (i != 0) {
+        yellowScore = yellowScore + 10 * enemyPiecesOfFoodEaten;
+      } else {
+        // Heads collide, determine who gets the points
+        if (piecesOfFoodEaten == enemyPiecesOfFoodEaten) {
+          if ((int)random(10) > 5) {
+            // green wins through random chance
+            System.out.println("Points through luck given to green.");
+            greenScore = greenScore + 5 * piecesOfFoodEaten;
+          } else {
+            // yellow wins through random chance
+            yellowScore = yellowScore + 5 * enemyPiecesOfFoodEaten;
+          }
+        } else if (piecesOfFoodEaten > enemyPiecesOfFoodEaten) {
+          // green has more, so wins
+          System.out.println("Green points given through head on collision.");
+          greenScore = greenScore + 6 * piecesOfFoodEaten;
+        } else {
+          // yellow has more, so wins
+          yellowScore = yellowScore + 6 * piecesOfFoodEaten;
         }
       }
     }
   }
   for (int i = 0; i < snakeSegments.size(); i++) {
-    for (int j = 0; j < enemySnakeSegments.size(); j++) {
-      if(i == 0 && j == 0) {
-        // head on collision
-        if (snakeSegments.get(i).getX() == snakeSegments.get(j).getX() && snakeSegments.get(i).getY() == snakeSegments.get(j).getY()) {
-          // head on
-          if(piecesOfFoodEaten == enemyPiecesOfFoodEaten) {
-            if((int)random(10) > 5) {
-               // green wins through random chance
-               greenScore++;
-            }
-            else {
-              // yellow wins through random chance
-              yellowScore++;
-            }
+    if ((snakeSegments.get(i).getX() == headOfEnemySnake.getX() && snakeSegments.get(i).getY() == headOfEnemySnake.getY())) {
+      // Point to green if not head
+      if (i != 0) {
+        greenScore = greenScore + 10 * piecesOfFoodEaten;
+      } else {
+        // Heads collide, determine who gets the points
+        if (piecesOfFoodEaten == enemyPiecesOfFoodEaten) {
+          if ((int)random(10) > 5) {
+            // green wins through random chance
+            System.out.println("Points through luck given to green.");
+            greenScore = greenScore + 5 * piecesOfFoodEaten;
+          } else {
+            // yellow wins through random chance
+            yellowScore = yellowScore + 5 * enemyPiecesOfFoodEaten;
           }
-          else if(piecesOfFoodEaten > enemyPiecesOfFoodEaten) {
-            // green has more, so wins
-            greenScore++;
-          }
-          else {
-            // yellow has more, so wins
-            yellowScore++;
-          }
-        }
-      }
-      else if(i == 0) {
-        // green snake dies
-        if (snakeSegments.get(i).getX() == snakeSegments.get(j).getX() && snakeSegments.get(i).getY() == snakeSegments.get(j).getY()) {
-          // Green player dies, yellow earns a point
-          yellowScore++;
-        }
-      }
-      else if(j == 0) {
-        // yellow snake dies
-        if (snakeSegments.get(i).getX() == snakeSegments.get(j).getX() && snakeSegments.get(i).getY() == snakeSegments.get(j).getY()) {
-          // Green player dies, yellow earns a point
-          greenScore++;
+        } else if (piecesOfFoodEaten > enemyPiecesOfFoodEaten) {
+          // green has more, so wins
+          System.out.println("Green points given through head on collision.");
+          greenScore = greenScore + 6 * piecesOfFoodEaten;
+        } else {
+          // yellow has more, so wins
+          yellowScore = yellowScore + 6 * piecesOfFoodEaten;
         }
       }
     }
   }
+  /*for (int i = 0; i < snakeSegments.size(); i++) {
+   for (int j = 0; j < enemySnakeSegments.size(); j++) {
+   if(i == 0 && j == 0) {
+   // head on collision
+   if (snakeSegments.get(i).getX() == enemySnakeSegments.get(j).getX() && snakeSegments.get(i).getY() == enemySnakeSegments.get(j).getY()) {
+   // head on
+   if(piecesOfFoodEaten == enemyPiecesOfFoodEaten) {
+   if((int)random(10) > 5) {
+   // green wins through random chance
+   System.out.println("Points through luck given to green.");
+   greenScore = greenScore + 5 * piecesOfFoodEaten;
+   }
+   else {
+   // yellow wins through random chance
+   yellowScore = yellowScore + 5 * enemyPiecesOfFoodEaten;
+   }
+   }
+   else if(piecesOfFoodEaten > enemyPiecesOfFoodEaten) {
+   // green has more, so wins
+   System.out.println("Green points given through head on collision.");
+   greenScore = greenScore + 6 * piecesOfFoodEaten;
+   }
+   else {
+   // yellow has more, so wins
+   yellowScore = yellowScore + 6 * piecesOfFoodEaten;
+   }
+   }
+   }
+   else if(i == 0) {
+   // green snake dies
+   if (snakeSegments.get(i).getX() == enemySnakeSegments.get(j).getX() && snakeSegments.get(i).getY() == enemySnakeSegments.get(j).getY()) {
+   // Green player dies, yellow earns a point
+   greenScore = greenScore + 10 * piecesOfFoodEaten;
+   }
+   }
+   else if(j == 0) {
+   // yellow snake dies
+   if (snakeSegments.get(i).getX() == enemySnakeSegments.get(j).getX() && snakeSegments.get(i).getY() == enemySnakeSegments.get(j).getY()) {
+   // Green player dies, yellow earns a point
+   System.out.println("Green wins points from yellow crashing.");
+   yellowScore = yellowScore + 10 * enemyPiecesOfFoodEaten;
+   }
+   }
+   }
+   }*/
   // If different segments have the same location...
   // Set food to 3.
 }
@@ -256,24 +323,24 @@ void keyPressed() {
       directionOfSnake = "right";
     }
   }
-  if(key == 'w' || key == 'W') {
-    if(!directionOfEnemySnake.equals("down")) {
-      directionOfEnemySnake = "up"; 
+  if (key == 'w' || key == 'W') {
+    if (!directionOfEnemySnake.equals("down")) {
+      directionOfEnemySnake = "up";
     }
   }
-  if(key == 's' || key == 'S') {
-    if(!directionOfEnemySnake.equals("up")) {
-      directionOfEnemySnake = "down"; 
+  if (key == 's' || key == 'S') {
+    if (!directionOfEnemySnake.equals("up")) {
+      directionOfEnemySnake = "down";
     }
   }
-  if(key == 'a' || key == 'A') {
-    if(!directionOfEnemySnake.equals("right")) {
-      directionOfEnemySnake = "left"; 
+  if (key == 'a' || key == 'A') {
+    if (!directionOfEnemySnake.equals("right")) {
+      directionOfEnemySnake = "left";
     }
   }
-  if(key == 'd' || key == 'D') {
-    if(!directionOfEnemySnake.equals("left")) {
-      directionOfEnemySnake = "right"; 
+  if (key == 'd' || key == 'D') {
+    if (!directionOfEnemySnake.equals("left")) {
+      directionOfEnemySnake = "right";
     }
   }
 }
