@@ -1,6 +1,6 @@
 # Snake
 
-*** A few snake games, and maybe more ***
+***A few snake games, and maybe more***
 
 ## Snake
 
