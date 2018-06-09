@@ -63,6 +63,18 @@ void draw() {
   drawScore();
   headOfSnake = snakeSegments.get(snakeSegments.size() - 1);
   headOfEnemySnake = enemySnakeSegments.get(enemySnakeSegments.size() - 1);
+  if(greenScore >= 5000) {
+    // green wins
+    noLoop();
+    fill(0, 153, 119);
+    text("Green wins!", 10, 460);
+  }
+  if(yellowScore >= 5000) {
+    // yellow wins
+    noLoop();
+    fill(153, 170, 0);
+    text("Yellow wins!", 10, 460);
+  }
 }
 
 void drawScore() {
